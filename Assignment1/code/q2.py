@@ -1,7 +1,7 @@
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
-
+import pdb
 
 def er_graph(n, p):
     # n is number of nodes
@@ -9,8 +9,18 @@ def er_graph(n, p):
     return nx.erdos_renyi_graph(n, p)
 
 
-def find_num_zero_cross(vec):
+# def find_num_zero_cross(vec):
+#     num_zero_cross = 0
+#     for i in range(vec.shape[0]-1):
+#         if vec[i] * vec[i+1] < 0:
+#             num_zero_cross += 1
+#     return num_zero_cross
+
+def find_num_zero_cross(vec1):
     num_zero_cross = 0
+    # pdb.set_trace()
+    vec = np.zeros(vec1.shape)
+    vec[np.abs(vec1) > 1e-8] = vec1[np.abs(vec1) > 1e-8]
     for i in range(vec.shape[0]-1):
         if vec[i] * vec[i+1] < 0:
             num_zero_cross += 1
@@ -19,17 +29,18 @@ def find_num_zero_cross(vec):
 
 def zero_cross_plot(g):
     W_mat = nx.adjacency_matrix(g1).todense()
-    D_mat = np.diag(np.sum(W_mat, axis=1))
+    D_mat = np.diag(np.ravel(np.sum(W_mat, axis=1)))
 
     L_mat = D_mat - W_mat
     eig_val, eig_vec = np.linalg.eig(L_mat)
-    idx = eig_val.argsort()[::-1]
+    idx = eig_val.argsort()
     eig_val = eig_val[idx]
     eig_vec = eig_vec[:, idx]
 
     num_zero_cross_vec = np.zeros(eig_vec.shape[1])
+    pdb.set_trace()
     for i in range(eig_vec.shape[1]):
-        num_zero_cross_vec[i] = find_num_zero_cross(eig_vec[:, i])
+        num_zero_cross_vec[i] = find_num_zero_cross(np.ravel(eig_vec[:, i]))
     # print('Zero Crossing Vector', num_zero_cross_vec)
     return num_zero_cross_vec
 
