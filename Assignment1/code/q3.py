@@ -13,14 +13,15 @@ def er_graph(n, p):
 
 def norm_laplacian(g):
     W_mat = nx.adjacency_matrix(g1).todense()
-    D_mat = np.diag(np.sum(W_mat, axis=1))
+    D_mat = np.diag(np.ravel(np.sum(W_mat, axis=1)))
     # D_root = np.diag(np.sum(W_mat, axis=1))
     D_root = np.sqrt(D_mat)
+    D_root_inv = np.linalg.inv(D_root)
     # L_mat = D_mat - W_mat
     pdb.set_trace()
-    L_mat = np.eye(W_mat.shape[0]) - np.dot(D_root, np.dot(W_mat, D_root))
+    L_mat = np.eye(W_mat.shape[0]) - np.dot(D_root_inv, np.dot(W_mat, D_root_inv))
     eig_val, eig_vec = np.linalg.eig(L_mat)
-    idx = eig_val.argsort()[::-1]
+    idx = eig_val.argsort()
     eig_val = eig_val[idx]
     eig_vec = eig_vec[:, idx]
 
@@ -38,3 +39,4 @@ if __name__ == "__main__":
 
     plt.plot(eig_val1)
     plt.plot(eig_val2)
+    plt.show()
