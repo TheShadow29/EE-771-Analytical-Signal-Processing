@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def er_graph(n, p):
     # n is number of nodes
     # p is probability
