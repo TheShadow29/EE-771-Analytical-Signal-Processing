@@ -1,8 +1,10 @@
 import numpy as np
 
 
-def find_num_zero_cross(vec):
+def find_num_zero_cross(vec1):
     num_zero_cross = 0
+    vec = np.zeros(vec1.shape)
+    vec[np.abs(vec1) > 1e-8] = vec1[np.abs(vec1) > 1e-8]
     for i in range(vec.shape[0]-1):
         if vec[i] * vec[i+1] < 0:
             num_zero_cross += 1
@@ -18,7 +20,7 @@ if __name__ == "__main__":
 
     L_mat = D_mat - W_mat
     eig_val, eig_vec = np.linalg.eig(L_mat)
-    idx = eig_val.argsort()[::-1]
+    idx = eig_val.argsort()
     eig_val = eig_val[idx]
     eig_vec = eig_vec[:, idx]
 

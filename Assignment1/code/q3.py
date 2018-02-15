@@ -18,7 +18,7 @@ def norm_laplacian(g):
     D_root = np.sqrt(D_mat)
     D_root_inv = np.linalg.inv(D_root)
     # L_mat = D_mat - W_mat
-    pdb.set_trace()
+    # pdb.set_trace()
     L_mat = np.eye(W_mat.shape[0]) - np.dot(D_root_inv, np.dot(W_mat, D_root_inv))
     eig_val, eig_vec = np.linalg.eig(L_mat)
     idx = eig_val.argsort()
