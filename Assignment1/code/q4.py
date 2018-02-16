@@ -5,6 +5,7 @@ import skimage.io as skio
 # import networkx as nx
 import skimage.transform as skt
 import skimage.color as skc
+import skimage.measure as skm
 # import scipy.sparse as sparse
 import time
 import pdb
@@ -70,8 +71,14 @@ def denoiser(orig_img_path, noisy_img_path):
     end_time = time.time()
 
     print("--- %s seconds ---" % (end_time - start_time))
+
+    # psnr_before = s
     skio.imshow(denoise_img)
     skio.show()
+
+    psnr_before = skm.compare_psnr(orig_img_ds, noisy_img_ds)
+    psnr_after = skm.compare_psnr(orig_img_ds, denoise_img)
+    print('Before ', psnr_before, 'After', psnr_after)
 
 
 if __name__ == "__main__":
@@ -82,5 +89,5 @@ if __name__ == "__main__":
 
     orig_img_path2 = img_dir / 'sfo.jpg'
     noisy_img_path2 = img_dir / 'sfo-noise.jpg'
-    # denoiser(orig_img_path1, noisy_img_path1)
-    denoiser(orig_img_path2, noisy_img_path2)
+    denoiser(orig_img_path1, noisy_img_path1)
+    # denoiser(orig_img_path2, noisy_img_path2)

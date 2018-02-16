@@ -1,10 +1,8 @@
 import numpy as np
 
 
-def find_num_zero_cross(vec1):
+def find_num_zero_cross(vec):
     num_zero_cross = 0
-    vec = np.zeros(vec1.shape)
-    vec[np.abs(vec1) > 1e-8] = vec1[np.abs(vec1) > 1e-8]
     for i in range(vec.shape[0]-1):
         if vec[i] * vec[i+1] < 0:
             num_zero_cross += 1
@@ -16,13 +14,16 @@ if __name__ == "__main__":
     W_mat[0, 1] = W_mat[0, 2] = W_mat[2, 3] = W_mat[3, 4] = W_mat[3, 5] = W_mat[3, 6] = 1
     W_mat = W_mat + W_mat.T
 
-    D_mat = np.diag(np.sum(W_mat, axis=1))
+    D_mat = np.diag(np.ravel(np.sum(W_mat, axis=1)))
 
     L_mat = D_mat - W_mat
-    eig_val, eig_vec = np.linalg.eig(L_mat)
+    eig_val, eig_vec_ = np.linalg.eig(L_mat)
     idx = eig_val.argsort()
     eig_val = eig_val[idx]
-    eig_vec = eig_vec[:, idx]
+    eig_vec_ = eig_vec_[:, idx]
+
+    eig_vec = np.zeros(eig_vec_.shape)
+    eig_vec[np.abs(eig_vec_) > 1e-8] = eig_vec_[np.abs(eig_vec_) > 1e-8]
 
     # q1a
     print('Eig Vec Basis', eig_vec)

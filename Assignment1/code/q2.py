@@ -38,7 +38,7 @@ def zero_cross_plot(g):
     eig_vec = eig_vec[:, idx]
 
     num_zero_cross_vec = np.zeros(eig_vec.shape[1])
-    pdb.set_trace()
+    # pdb.set_trace()
     for i in range(eig_vec.shape[1]):
         num_zero_cross_vec[i] = find_num_zero_cross(np.ravel(eig_vec[:, i]))
     # print('Zero Crossing Vector', num_zero_cross_vec)
@@ -54,6 +54,6 @@ if __name__ == "__main__":
     zero_vec1 = zero_cross_plot(g1)
     zero_vec2 = zero_cross_plot(g2)
     plt.plot(zero_vec1, '-r')
-    plt.plot(zero_vec2, '-b')
+    # plt.plot(zero_vec2, '-b')
     plt.show()
     # Conclusion : Same number of zero cross
