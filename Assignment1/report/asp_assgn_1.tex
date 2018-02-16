@@ -8,6 +8,8 @@
 \usepackage{amsmath}
 \usepackage{siunitx}
 \sisetup{round-mode=places, round-precision=4}
+\usepackage{ bbold }
+
 \usepackage{pdflscape}
 \usepackage{listings}
 \usepackage{hyperref}
@@ -103,17 +105,25 @@ Comments:
 \end{itemize}
 
 \section*{Q4}
+Image denoising. Parameters chosen for good denoising (different from those stated in the paper). $\theta = 1$ and $\kappa = 1.5$.
 
-% \begin{figure}[H]
-%   \centering
-%   \begin{subfigure}[H]{1.0\linewidth}
-%     \includegraphics[scale=0.25]
-%   \end{subfigure}
-%   ~
-%   \begin{subfigure}[H]{1.0\linewidth}
-%     \includegraphics[scale=0.25]
-%   \end{subfigure}
-% \end{figure}
+$\theta = 0.1$ is not chosen as it led to the weight matrix and corresponding laplacian to have extremely small values leading to eigenvalues with very small values. $\kappa = 1.5$ is chosen to accomodate weights even for diagonal connections as well.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{images/q4_1_denoise}
+  \caption{Image Denoising for SeaGull}
+  \label{fig:q4_1}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{images/q4_2_denoise}
+  \caption{Image Denoising for sko}
+  \label{fig:q4_2}
+\end{figure}
+
+We note that in both cases the psnr of the denoised image is considerably higher than that of the noisy image and therefore the low pass based on graph fourier transform indeed works as intended.
 
 \section*{Q5}
 $Eigen Vectors =  \\
@@ -136,8 +146,67 @@ $
 Checking Symmetry Properties:
 \begin{itemize}
 \item We firstly note that normalized laplacian matrix has been used, therefore the eigenvalues lie in the range [0, 2].
-\item Next we note that when $\lambda$ is an eigenvalue, $2-\lambda$ is also an eigen value. The pairs here are : $[(0, 2), (0.5, 1.5), (0.5, 1.5)]$.
-\item We further note that the eigen vectors have the property that:
+\item Next we note that when $\lambda$ is an eigenvalue, $2-\lambda$ is also an eigen value. The pairs here are : $[(0, 2), (0.5, 1.5), (0.5, 1.5)]$. This is because of the graph is bipartite with the partitions H=[1,2,3] and L=[4,5,6]
+\item We further note that the eigen vectors have the property that: if
+  $u = \begin{bmatrix}
+    u_H \\
+    u_L \\
+  \end{bmatrix}$
+  is the eigenvector corresponding to the eigenvalue say $\lambda$ then the eigenvector
+  $v =
+  \begin{bmatrix}
+    u_H \\
+    -u_L\\
+  \end{bmatrix}$
+  corresonds to the eigenvalue $2-\lambda$.
+\item For the eigen pair (0, 2) the eigenvectors are
+  $u_0 =
+  \begin{bmatrix}
+      0.408 & 0.408 & 0.408 & 0.408 & 0.408 & 0.408
+    \end{bmatrix}$
+    and
+    $u_5 =
+    \begin{bmatrix}
+        0.408 & 0.408 & 0.408 & -0.408 & -0.408 & -0.408
+    \end{bmatrix}$
+
+    Similarly for the pairs (0.5, 1.5) the eigen vectors are
+    $u_1 =
+    \begin{bmatrix}
+      0.210 & -0.571 & 0.361 & 0.571 & -0.361 & -0.210
+    \end{bmatrix}$
+    and
+    $u_4 =
+    \begin{bmatrix}
+      0.218 & -0.572 & 0.354 & -0.572 & 0.354 & 0.218
+    \end{bmatrix}$
+
+    And the remaining pair (0.5, 1.5) we have :
+    $u_2 =
+    \begin{bmatrix}
+      -0.577 & 0.289 & 0.289 & -0.289 & -0.289 & 0.577
+    \end{bmatrix}$
+    and
+    $u_3 =
+    \begin{bmatrix}
+        0.577 & -0.289 & -0.289 & -0.289 & -0.289 & 0.577
+    \end{bmatrix}$
+
+\item The downsampled versions of $f_L$ and $f_H$ are given by
+ $$f_L = \frac{1}{2} (I + J_{\beta_L}) f$$
+ $$f_H = \frac{1}{2}(I + J_{\beta_H}) f$$
+Here $\beta_H$ is a vector indexed by the node number. $\beta_H[n] = \mathbb{1}_{n \in H} - \mathbb{1}_{n \in L}$. It is easy to note that $\beta_L = - \beta_H$. $J_{\beta_H}$ and $J_{\beta_L}$ are correspondingly diagonalization of the corresponding $\beta$.
+
+\item In this case we find $f_L =
+  \begin{bmatrix}
+    0. & 0. & 0. & 1. & 2. & 3.
+  \end{bmatrix}$
+  and
+  $f_H =
+  \begin{bmatrix}
+    1. & 2. & 3. & 0. & 0. & 0.
+  \end{bmatrix}$
+
 
 \end{itemize}
 \end{document}
