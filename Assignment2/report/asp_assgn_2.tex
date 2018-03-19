@@ -75,8 +75,21 @@ We are given that $W(x)$ is a white noise process. We are also given that $S_W(\
 From power spectral density theory we know that:
 \begin{align}
   \label{eq:psd1}
-  S_{W_s} = \frac{1}{X}\sum_{k=-\infty}^{\infty}S_X(\omega - \frac{2\pi k}{T}) \tag*{$|\omega| \le \frac{\pi}{T}$}
+  S_{W_s}(\omega) = \frac{1}{X}\sum_{k=-\infty}^{\infty}S_W(\omega - \frac{2\pi k}{X}) \tag*{$|\omega| \le \frac{\pi}{X}$}
 \end{align}
+We note that the required variance of $W_S$ is given by $\sigma^2 = S_{W_s}(0)$
+$$S_{W_s}(0) = \frac{1}{X} \sum_{k=-\infty}^{\infty}S_W(\frac{2\pi k}{X})$$
+$$\sigma^2 = S_{W_s}(0) = \frac{S_W(0)}{X} + \frac{1}{X} \sum_{k \in \mathcal{Z}, k \ne 0} S_W(\frac{2 \pi k}{X})$$
+
+Further, we know, power spectral density is always positive. Also the power spectral density of a real valued process is a real and even function of frequency. Therefore $S_W(\omega) = S_W(-\omega)$.
+
+This gives us:
+$$\sigma^2 = \frac{S_W(0)}{X} +  \frac{2}{X} \sum_{k=1}^{\infty} S_W(\frac{2 \pi k}{X})$$
+Using the fact that $X$ is sufficiently small we get:
+$$\sigma^2 = \frac{S_W(0)}{X} +  \frac{2}{X} \sum_{k=1}^{\infty} \frac{\alpha X}{2 \pi k}$$
+$$\sigma^2 = \frac{S_W(0)}{X} + \frac{\alpha}{\pi} \sum_{k=1}^{\infty} \frac{1}{k}$$
+
+Clearly, this divergest to $\infty$ and therefore the variance of sampled white noise is $\infty$.
 
 \section*{Q3}
 
