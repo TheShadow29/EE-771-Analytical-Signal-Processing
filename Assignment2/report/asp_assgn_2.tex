@@ -94,5 +94,58 @@ Clearly, this divergest to $\infty$ and therefore the variance of sampled white 
 \section*{Q3}
 
 \section*{Q4}
+We are given a polynomial field $g(x) = a + bx + cx^2$ where $x \in [0, 1]$. Denote the legendre polynomial of degree k by $p_k(x)$. We know that the legendre polynomials are orthogonal in $[-1, 1]$ but the function $g$ given to  us is in $[0, 1]$. So we have to first convert it into another polynomial with range $[-1, 1]$.
 
+We choose $h(x) = g(\frac{x+1}{2})$. Clearly the domain of definition for $h$ is $[-1, 1]$. Let $h(x) = \alpha + \beta x + \gamma x^2$ then we get:
+$$\alpha = a + \frac{b}{2} + \frac{c}{2}$$
+$$\beta = \frac{b}{2} + c$$
+$$\gamma = \frac{c}{2}$$
+
+Clearly, estimating $a, b, c$ is equivalent to estimating $\alpha, \beta, \gamma$. So we now focus on estimating the latter. Denote the coefficients of $h$ in the legendre polynomial basis be given by $A[k]$. We can therefore write:
+$$A[k] = \frac{2k+1}{2} \int_{-1}^1 h(x) p_k(x) dx$$
+
+We know approximate it using reimann sum (M point approximation):
+$$A_R[k] = \frac{2k+1}{2} \sum_{i=1}^M h(\frac{2i}{M}-1) p_k(\frac{2i}{M} -1)$$
+Here we have replaced $\frac{i}{M}$ with $\frac{2i}{M}-1$ which is the transformation from g to h ($g(x) = h(2x-1)$).
+
+We note that we do not have samples at $\frac{2i}{M} -1$ rather at points $\hat{S}_i = 2 S_i - 1$. So we estimate it using
+$$\hat{A}[k] = \frac{2k+1}{2} \sum_{i=1}^M h(\hat{S}_i) p_k(\frac{2i}{M} -1)$$
+
+First case we don't consider noise. We want to estimate $A[k]$ from $\hat{A}[k]$ and we try to give a bound for the same. All thefollowing derivations are from the paper on location unaware mobile sensor by Animesh Kumar.
+
+$$\mathbb{E}[|\hat{A}[k] - A[k]|^2] \le 2 \mathbb{E}[|\hat{A}[k] - A_R[k]|^2] + 2 \mathbb{E}[|A_R[k] - A[k]|^2]$$
+
+Consider the first term of RHS:
+
+$$|\hat{A}[k] - A_R[k]| = |\frac{1}{M}\sum_{i=1}^M[h(\hat{S_i}) - h(\frac{2i}{M} -1)]p_k(\frac{2i}{M} -1)|$$
+$$|\hat{A}[k] - A_R[k]|^2 \le ||h||_{\infty}^2 \frac{1}{M}\sum_{i=1}^M |\hat{S_i} - (\frac{2i}{M} -1)|^2 p_k(\frac{2i}{M}-1)$$
+$$|\hat{A}[k] - A_R[k]|^2 \le ||h||_{\infty}^2 \frac{1}{M}\sum_{i=1}^M |\hat{S_i} - (\frac{2i}{M} -1)|^2$$
+The last step follows because $p_k(x)$ are bounded between [-1,1].
+
+Following the result from the paper we get:
+$$\mathbb{E}[|\hat{A}[k] - A_R[k]|^2] \le \frac{C_1}{n}$$
+Here $n$ is the oversampling rate.
+
+Now consider the second term of RHS:
+$$|A_R[k] - A[k]| = |\frac{1}{M} \sum_{i=1}^M [h(\frac{2i}{M} -1)p_k(\frac{2i}{M} -1) - \int_{\frac{2i}{M} -1)}^{\frac{2i+2}{M}-1}h(x)p_k(x)dx]$$
+For some constants $Z_{i,m} \in [\frac{2i}{M} -1), \frac{2i+2}{M} -1)]$ we have:
+$$|A_R[k] - A[k]| = |\frac{1}{M} \sum_{i=1}^M [h(\frac{2i}{M} -1)p_k(\frac{2i}{M} -1) - h(Z_{i,m})p_k(Z_{i,m})dx]$$
+$$|A_R[k] - A[k]| \le \frac{1}{M}\sum_{i=1}^M |Z_{i,m} - \frac{i}{M}| ||\frac{d}{dx}h(x)p_k(x)||_{\infty}$$
+$$|A_R[k] - A[k]| \le \frac{1}{M}\sum_{i=1}^M \frac{1}{M} ||\frac{d}{dx}h(x)p_k(x)||_{\infty}$$
+$$|A_R[k] - A[k]| \le \frac{1}{M} ||\frac{d}{dx}h(x)p_k(x)||_{\infty}$$
+$$|\frac{d}{dx}h(x)p_k(x)| = |h(x)p_k'(x) + h'(x)p_k(x)| \le |h(x)| + |h'(x)| \le C_2$$
+$$|A_R[k] - A[k]| \le \frac{C_2}{M} \le \frac{C_3}{(n-\lambda)}$$
+$$\mathbb{E}[|A_R[k] - A[k]|^2] \le \frac{C_4}{(n-\lambda)^2}$$
+
+Therefore we get:
+$$\mathbb{E}[|\hat{A}[k] - A[k]|^2] \le 2 \frac{C1}{n} + 2 \frac{C4}{(n-\lambda)^2}$$
+
+So we see if number of samples are increased the error decreases as an order of $\frac{1}{n}$ and approaches 0. Once $A[k]$ are known we can estimate the original coefficients of $g$ as well.
+
+For the case where additive noise exists, it will lead to an additional term corresponding to the averaged noise given by:
+$$\mathbb{E}(|W_{avg}[k]|^2) = \mathbb{E}[|\frac{1}{M}\sum_{i=1}^M W(\hat{S}_i)p_k(\frac{2i}{M}-1)|^2]$$
+$$\mathbb{E}(|W_{avg}[k]|^2) = \mathbb{E}[\frac{1}{M^2}\sum_{i=1}^M |W(\hat{S}_i)|^2]$$
+$$\mathbb{E}(|W_{avg}[k]|^2) = \mathbb{E}[\frac{\sigma^2}{M}] \le \frac{C_5}{n-\lambda}$$
+
+Even when this term is added the error still decreases as an order of $\frac{1}{n}$ and hence our previous claims still holds.
 \end{document}
