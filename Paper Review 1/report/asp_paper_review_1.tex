@@ -1,0 +1,42 @@
+\documentclass{article}
+\usepackage[a4paper, tmargin=1in, bmargin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[justification=centering]{caption}
+
+% \usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\sisetup{round-mode=places, round-precision=4}
+\usepackage{ bbold }
+
+\usepackage{pdflscape}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+\title{EE 771 : Recent Topics in Analytical Signal Processing Paper Review 1}
+\author{Arka Sadhu - 140070011}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Q1}
+The paper has quite a few differences from the previous literature in the field. In particular:
+\begin{itemize}
+\item Earlier works use some or the other kind of fitness score and compare pairwise nodes and set a weight corresponding to the edge joining the two nodes. The fitness score in some sense evaluates the smoothness of the graph signal.
+\item The fitness score can either be from a regression model, or correlations between wavelet coefficients or PCA applied to matrices.
+\item The above class of algorithms only consider the local structure of the graph (pairwise correlation) and not the global structure. Also the paper uses factor analysis which can reveal a simple linear statistical model between the graph signal and the latent variables.
+\item Another class of algorithms tackle a similar problem of multiple kernel learning. But they use some priors to construct the initial graph and then use smoothness constraint to refine the graph. However, this paper makes no such assumptions and the graph is learnt only through the signal observations.
+\item The problem of learning graphical models from observed data and inferring graph structure for gaussian markov random fields are similar problems. However, it is known that there is a one-to-one correspondence between the algorithms for solving the above to partial correlations of random variables and hence it again collapses to the case of learning pairwise edge weights.
+\item Also, the learned graphical model (inverse correlation matrix) cannot be easily projected to get a laplacian which has reuqirements like having row sum as 0, non-positive diagonal entries. Therefore learning the inverse correlation matrix doesn't reveal the global structure of the graph.
+\item This paper, tries to jointly learn the link between the global smoothness and the graph topology using optimization techniques and this joint learning is what makes the work done novel.
+\end{itemize}
+
+\section*{Q2}
+
+
+\end{document}
