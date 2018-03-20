@@ -37,6 +37,18 @@ The paper has quite a few differences from the previous literature in the field.
 \end{itemize}
 
 \section*{Q2}
+The smoothness of the graph signal is captured in equation (4) of the paper.
+\begin{itemize}
+\item The paper uses a factor analysis model and uses the following representation:
+  $$ x = \chi h + u_x + \epsilon$$
+\item Here $x \in \mathbb{R}^n$ is the observed graph signal, $h \in \mathbb{R}^n$ represents the latent variable which controls the graph signal $x$ through the eigen-vector matrix $\chi$. $u_x \in \mathbb{R}^n$ is the mean of $x$.
+\item Further it is assumed that the latent variable $h$ has the following distribution:
+  $$h \sim \mathcal{N}(0, \Lambda^{\dagger})$$
+\item Here $\Lambda^{\dagger}$ is the moore-penrose inverse of the eigen-value matrix $\Lambda$.
+\item Clearly, $h$ will have a higher probability of taking a lower value. $x$ is proportional to $\chi h$. $\chi$ has the usual fourier transform interpretation. Hence smaller values of $h$ implies the graph signal $x$ has more lower frequency components. And thus the smoothness of the graph signal is captured. Also higher the eigen-value, smaller is the standard deviation corresponding to that component and therefore more condensed towards zero. In other words, the higher frequency components have very small contribution.
+\item We note that any distribution of $h$ which has condensed probability mass near zero is a suitable candidate and can be readily replaced with the gaussian distribution and still capture the smoothness.
+\end{itemize}
 
+\section*{Q3}
 
 \end{document}
