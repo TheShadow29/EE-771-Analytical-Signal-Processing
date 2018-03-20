@@ -50,5 +50,81 @@ The smoothness of the graph signal is captured in equation (4) of the paper.
 \end{itemize}
 
 \section*{Q3}
+\begin{itemize}
+\item The input graph model in eq(4) is:
+  $$ x = \chi h + u_x + \epsilon$$
+\item Here $x \in \mathbb{R}^n$ is the observed graph signal, $h \in \mathbb{R}^n$ represents the latent variable which controls the graph signal $x$ through the eigen-vector matrix $\chi$. $u_x \in \mathbb{R}^n$ is the mean of $x$. $\epsilon$ is the noise that exists in capturing the graph signal.
+\item $\epsilon \sim \mathcal{N}(0, \sigma_{\epsilon}^2I_{n})$ and $h \sim \mathcal{N}(0, \Lambda^{\dagger})$
+\item The authors claim that the input graph model is generalization of the classical factor analysis model. When representing the graph signal in terms of the eigen-vector matrix $\chi$ the model implicitly relates the topology of the graph to the properties of the graph signals. Also it can be interpreted as the fourier basis of the graph signal.
+\item The distribution of $h$ captures the smoothness of the signal (described in detail in q2).
+\item Also, in the noise free scenario, $x$ can be seen as a gaussian markov random field with respect to the graph G and the laplacian L being the precision matrix.
+\item The model also generalizes well in the case of noise.
+\item In another work, it is shown that signal represneation with the classical factor analysis model provides a probabilistic interpretation of the representation learned by the PCA.
+\item The distribution of $x|h$ and $x$ are as follows:
+  $$x|h \sim \mathcal{N}(\chi h + u_x, \sigma_{\epsilon}^2 I_n)$$
+  $$x \sim \mathcal{N}(u_x, L^{\dagger} + \sigma_{\epsilon}^2 I_n)$$
+\item When $h$ is given then since $\epsilon$ is gaussian distributed, $x|h$ simply becomes a shifted gaussian.
+\item When $h$ is not given then the $x$ becomes the sum of two gaussians and therefore its distribution is the convolution of the two gauassians and thus the variances add up.
+\end{itemize}
+
+\section*{Q4}
+\begin{itemize}
+\item The main objective to be optimized is that in eq(15) which is:
+  \begin{equation}
+    \label{eq:15}
+    \min_{L, y} ||x - y||_2^2 + \alpha y^T L y
+  \end{equation}
+  Here $y = \chi h$
+\item We need to jointly optimize for both $L, y$ such that $y$ is close to the observed signal $x$ and also that $y$ remains smooth.
+\item To solve the above \ref{eq:15} the following objective is used:
+  \begin{equation}
+    \label{eq:16}
+    \begin{aligned}
+      & \min_{L \in \mathbb{R}^{n x n}, Y \in \mathbb{R}^{n x p}}
+      & & ||X - Y||_F^2 + \alpha tr(Y^T L Y) + \beta||L||_F^2 \\
+    % & \text{s.t.} & & tr(L) = n
+      % & \underset{x}{\text{minimize}}
+      % & & f_0(x) \\
+    & \text{subject to}
+    & & tr(L) = n \\
+    &&& L_{ij} = L_{ji} \le 0, i \ne j, \\
+    &&& L \cdot 1 = 0
+    \end{aligned}
+  \end{equation}
+\item Here $X \in \mathbb{R}^{n x p}$ is the data matrix containing p samples as columns. $\alpha$ and $\beta$ are two regularization constants. $tr(.)$ is the trace of the matrix. $||.||_F$ is the frobenius norm.
+\item The first constraint ensures that no trivial solutions for L are found. It also fixes the L1 norm of the laplacian.
+\item The second and third constraints ensure that the $L$ matrix is always positive semidefinite and also a valid laplacian (since laplacian is given by $D-W$ with all entries of $W$ positive and therefore non-diagonal entries of L are negative or 0.)
+\item The first and second term in the objective comes directly from the \ref{eq:15}
+\item The last term of frobenius norm of laplacian acts as another regularization to control the distribution of the off-diagonal elements of the laplacian. It is also noted that the when $Y$ is fixed the regularization is akin to that of penalties in elastic net.
+\end{itemize}
+
+\section*{Q5}
+The optimzation problem in \ref{eq:16} is not jointly convex in $L$ and $Y$. Therefore the authors adopt a scheme of alternating minimization where at each step one variable is fixed and the other variable is solved.
+\begin{itemize}
+\item First they initialize $Y$ as the signal observation $X$. We note that from the factor analysis method $Y$ can be considered some form of average of the graph signals and therefore the initialization is justified.
+\item Thus at the first step the following optimization problem is solved for L:
+  \begin{equation}
+    \label{eq:17}
+    \begin{aligned}
+      & \min_L
+      & & \alpha tr(Y^T L Y) + \beta ||L||_F^2 \\
+      & \text{s.t.}
+      & & tr(L) = n \\
+      &&& L_{ij} = L_{ji} \le 0, i \ne j \\
+      &&& L \cdot 1 = 0
+    \end{aligned}
+  \end{equation}
+\item In the second step, $L$ is fixed to the value from above and the following optimization problem is solved for Y:
+  \begin{equation}
+    \label{eq:18}
+    \begin{aligned}
+      & \min_Y ||X - Y||_F^2 + \alpha tr(Y^T L Y)
+    \end{aligned}
+  \end{equation}
+\item It is further noted that both the problems in \ref{eq:17} and \ref{eq:18} can be casted as convex optimization problems with unique minimizers.
+% \item Moreover, since $L$ is symmetric only upper half of the values are required to be known.
+\end{itemize}
+
+\section*{Q6}
 
 \end{document}
