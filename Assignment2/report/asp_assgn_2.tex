@@ -33,8 +33,6 @@ We are also given that we move along the path $y = \sqrt{2}x$ and this path is d
   h(t) = g(t, \sqrt(2)t) \tag*{$0 \le t \le 1/\sqrt{2}$}
 \end{align}
 
-Let the samples taken along the path L be separated by distances of $\Delta_L$. Also suppose that we shift this line above by $\Delta_p$ (only in the y-direction). Slope of the line is $\sqrt{2}$ and thus its projections of x-axis and y-axis are $\Delta_x = \Delta_L / \sqrt{3} $ and $\Delta_y = \Delta_p + \Delta_L \sqrt{2} / \sqrt{3}$. If we have only one line and no shift then $\Delta_y = \Delta_L \sqrt{2} / \sqrt{3}$.
-
 \subsection*{1a}
 We need to find the degrees of freedom along the two axes of the 2d field $g$. First we consider along the x-axis i.e. y is a constant (here taken to be $y_0$) and x is variable.
 
@@ -61,37 +59,62 @@ Again, we can reconstruct $g(x_0, y)$ from the values of $\beta[l]$ and 21 such 
 We note that the representations in \ref{eq:gy0} and \ref{eq:gx0} readily suggest the bandlimitness of the 1d representation. For the case of $g(x, 0.5)$ we note that \ref{eq:gy0} directly implies that the maximum frequency requried would be when $k = +5$ or $k = -5$ both of which correspond to 5Hz. Also we note that this value is independent of the value of $y_0$. Similarly for the case of $g(0.25, y)$ we have maximum frequency of 10Hz. Therefore both 1d representations are bandlimited.
 
 \subsection*{1c}
-We first note that $g(x,y)$ is bandlimited to $[-\rho_x, \rho_x] x [-\rho_y, \rho_y]$ where $\rho_x = 10\pi$ and $\rho_y = 20 \pi$. For $h(t)$ to cover all degrees of freedom of $g(x, y)$ we need that there should be no aliasing in either dimension. That is, we need $\Delta_x \le \pi / \rho_x$ and $\Delta_y \le \pi / \rho_y$. That is:
-$$\Delta / \sqrt{3} \le 1 /10$$
-$$\Delta \sqrt{2} / \sqrt{3} \le 1 / 20$$
-The above reduces to $\Delta \le \sqrt{3} / 10$ and $\Delta \le \sqrt{3}/(20 \sqrt{2})$. Clearly the second inequality is stronger and therefore we need $\Delta \le \sqrt{3} / (20 * \sqrt{2})$ so that $h(t)$ can capture all degrees of freedom of $g(x, y)$.
+% We answer both the questions in 1c and 1d together. In particular, we show 1d to be true, i.e. we show how to reconstruct $g$ from $h$ which in itself proves our claim in 1c that $h$ indeed captures all the degrees of freedom in $g$.
+
+We first note the formula for $h(t) = g(t, \sqrt{2}t)$ can be given as:
+\begin{align}
+  \label{eq:2}
+  h(t) = \sum_{k=-5}^{k=5}\sum_{l=-10}^{l=10}a[k, l] exp(j2\pi kt + j2\pi l\sqrt{2}t) \tag*{$0 \le t \le 1 / \sqrt{2}$}
+\end{align}
+
+We further note that we can reconstruct $g(x, y)$ if we are given $a[k, l]$ for all $k = \{-5, -4 ... 5\}$ and $l = \{-10, -9 ... 10\}$. We also note that none of the complex exponentials overlap with the other, that is all the complex exponentials are distinct from each other. This is because the factor with $l$ is an irrational number and therefore the sampled frequency are all distinct from each other. Moreover, we know that the complex exponentials form an orthogonal basis and therefore each of the $a[k, l]$ terms can be recovered.
+
+This indeed proves that $h$ captures all the degrees of freedom of $g$.
 
 \subsection*{1d}
-As shown in above part, if $\Delta \le \sqrt{3} / (20 / \sqrt{2})$ then we can reconstruct $g(x, y)$ from $h(t)$.
+As argued in 1c, $h$ captures all the degrees of freedom in $g$. To recover $g$ from $h$ we need to extract out the values of $a[k, l]$. We note that we have access to the complete 1d signal $h(t)$.
+
+Further using orthogonality property of complex exponentials we note:
+$$f(t) = \sum_{n=-\infty}^{\infty} c_n exp(j2\pi n t)$$
+$$c_n = \int_{-\frac{1}{2}}^{\frac{1}{2}} f(t)exp(-j 2\pi n t)dt$$
+
+To recover $g$ from $h$ we do the following. For each $k = \{-5, -4 ... 5\}$ and $l = \{-10, -9 ... 10\}$ we get
+$$a[k, l] = \int_{-\frac{1}{2}}^{\frac{1}{2}} h(t) exp(-j 2\pi t (k + l \sqrt{2}) dt$$.
+
+Once we have $a[k, l]$, we can trivially find $g(x,y)$ using its definition.
+
 
 \section*{Q2}
-We are given that $W(x)$ is a white noise process. We are also given that $S_W(\omega) \propto \frac{1}{\omega}$ for $|\omega| \ge \frac{\pi}{X}$ where $X$ is the sampling distance.
+We are given that $W(x)$ is a stationary noise process. We are also given that $S_W(\omega) \propto \frac{1}{\omega}$ for $|\omega| \ge \frac{\pi}{X}$ where $X$ is the sampling distance.
 
 From power spectral density theory we know that:
 \begin{align}
   \label{eq:psd1}
   S_{W_s}(\omega) = \frac{1}{X}\sum_{k=-\infty}^{\infty}S_W(\omega - \frac{2\pi k}{X}) \tag*{$|\omega| \le \frac{\pi}{X}$}
 \end{align}
-We note that the required variance of $W_S$ is given by $\sigma^2 = S_{W_s}(0)$
-$$S_{W_s}(0) = \frac{1}{X} \sum_{k=-\infty}^{\infty}S_W(\frac{2\pi k}{X})$$
-$$\sigma^2 = S_{W_s}(0) = \frac{S_W(0)}{X} + \frac{1}{X} \sum_{k \in \mathcal{Z}, k \ne 0} S_W(\frac{2 \pi k}{X})$$
+We note that the required variance of $W_S$ is given by $\sigma^2 = \frac{1}{\pi} \int_{0}^{\infty}S_{W_s}(\omega)d\omega$
+$$S_{W_s}(\omega) = \frac{1}{X} \sum_{k=-\infty}^{\infty}S_W(\omega - \frac{2\pi k}{X})$$
+$$S_{W_s}(\omega) = \frac{S_W(\omega)}{X} + \frac{1}{X} \sum_{k \in \mathcal{Z}, k \ne 0} S_W(\omega - \frac{2 \pi k}{X})$$
 
-Further, we know, power spectral density is always positive. Also the power spectral density of a real valued process is a real and even function of frequency. Therefore $S_W(\omega) = S_W(-\omega)$.
+Next we note that $\hat{\omega} = |\omega - \frac{2\pi k}{X}| \ge \frac{\pi}{X}$ for all $|\omega| \le \frac{\pi}{X}$, $k \ne 0$. Moreover, if $|\hat{\omega}| \ge \frac{\pi}{X}$ we have $S_W(\hat{\omega}) = \frac{\alpha}{|\hat{\omega}|}$. This futher implies for $k \ge 1$ we will have $S_W(\hat{\omega}) \ge S_W(|\frac{2\pi k}{X}|)$ and for $k \le 1$ we will have $S_W(\hat{\omega}) \ge S_W(|\frac{2 \pi (K+1)}{X})$.
 
-This gives us:
-$$\sigma^2 = \frac{S_W(0)}{X} +  \frac{2}{X} \sum_{k=1}^{\infty} S_W(\frac{2 \pi k}{X})$$
-Using the fact that $X$ is sufficiently small we get:
-$$\sigma^2 = \frac{S_W(0)}{X} +  \frac{2}{X} \sum_{k=1}^{\infty} \frac{\alpha X}{2 \pi k}$$
-$$\sigma^2 = \frac{S_W(0)}{X} + \frac{\alpha}{\pi} \sum_{k=1}^{\infty} \frac{1}{k}$$
+Thus we can equivalently write:
+$$S_{W_s}(\omega) = \frac{S_W(\omega)}{X} + \frac{1}{X} \alpha \sum_{k=1}^{\infty} \frac{X}{2\pi k} + \frac{X}{2\pi (k+1)}$$
+$$S_{W_s}(\omega) \ge \frac{S_W(\omega)}{X} + \frac{\alpha}{2\pi} \sum_{k=2}\frac{1}{k}$$
 
-Clearly, this divergest to $\infty$ and therefore the variance of sampled white noise is $\infty$.
+Clearly, $S_{W_s}(\omega)$ diverges for all $\omega$. Therefore $\sigma^2 = \int_{0}^{\infty}S_{W_s}(\omega)$ also diverges. Thus variance of the sampled noise is $\infty$.
+% further, we know, power spectral density is always positive. Also the power spectral density of a real valued process is a real and even function of frequency. Therefore $S_W(\omega) = S_W(-\omega)$.
+
+% This gives us:
+% $$S_{W_s}(\omega) = \frac{S_W(\omega)}{X} +  \frac{1}{X} \sum_{k=1}^{\infty} S_W(\omega - \frac{2 \pi k}{X}) + \frac{1}{X} \sum_{k=-\infty}^{-1} S_W(\omega - \frac{2 \pi k}{X})$$
+% Using the fact that $X$ is sufficiently small we get:
+% $$\sigma^2 = \frac{S_W(0)}{X} +  \frac{2}{X} \sum_{k=1}^{\infty} \frac{\alpha X}{2 \pi k}$$
+% $$\sigma^2 = \frac{S_W(0)}{X} + \frac{\alpha}{\pi} \sum_{k=1}^{\infty} \frac{1}{k}$$
+
+% Clearly, this divergest to $\infty$ and therefore the variance of sampled white noise is $\infty$.
 
 \section*{Q3}
+
 
 \section*{Q4}
 We are given a polynomial field $g(x) = a + bx + cx^2$ where $x \in [0, 1]$. Denote the legendre polynomial of degree k by $p_k(x)$. We know that the legendre polynomials are orthogonal in $[-1, 1]$ but the function $g$ given to  us is in $[0, 1]$. So we have to first convert it into another polynomial with range $[-1, 1]$.
