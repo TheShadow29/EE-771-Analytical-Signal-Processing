@@ -114,8 +114,21 @@ Clearly, $S_{W_s}(\omega)$ diverges for all $\omega$. Therefore $\sigma^2 = \int
 % Clearly, this divergest to $\infty$ and therefore the variance of sampled white noise is $\infty$.
 
 \section*{Q3}
+We are given that $g(x, y)$ is an infinite support 2d field. Also let $\tilde{g}(\omega, \nu)$ be the 2d fourier transform of thefield $g$. Moreover, it is known that:
+\begin{align}
+  \label{eq:q3}
+  \tilde{g}(\omega, \nu) \propto \frac{1}{\omega^3}exp(-|\nu|) \tag*{$|\omega| > 1, |\nu| > 1$}
+\end{align}
 
+We need to find the direction (along x-axis or along y-axis) in which we will find minimum aliasing. We first suppose that we will keep $x$ fixed and go along the y-axis. Let $h(y) = g(x_0, y)$
 
+$$h(y) = g(x_0, y) = InvFourier(H(\nu)) = \int_{-\infty}^{\infty}H(\nu) exp(j2\pi \nu y) d\nu$$
+$$H(\nu) = \int_{-\infty}^{\infty}\tilde{g}(\omega, \nu) exp(j \omega x_0) d\omega$$
+$$h(y) = \int_{-\infty}^{-1}H(\nu) exp(j2\pi \nu y) d\nu + \int_{-1}^{1}H(\nu) exp(j2\pi \nu y) d\nu + \int_{1}^{\infty}H(\nu) exp(j2\pi \nu y) d\nu$$
+Let the three terms be $h_1(y), h_2(y), h_3(y)$ respectively. We note that the terms $h_1, h_3$ are the ones which control the aliasing (higher the magnitude of their sum, higher is the aliasing).
+
+First we consider $h_3(y)$
+$$h_3(y) = \int_{1}^{\infty} \int_{-1}^{1} \tilde{g}(\omega, \nu) exp(j\omega x_0 + j \nu y)d\omega d\nu + 2 \int_{1}^{\infty} \int_{1}^{\infty} \tilde{g}(\omega, \nu) exp(j \omega x_0 + j \nu y)d\omega d\nu$$
 \section*{Q4}
 We are given a polynomial field $g(x) = a + bx + cx^2$ where $x \in [0, 1]$. Denote the legendre polynomial of degree k by $p_k(x)$. We know that the legendre polynomials are orthogonal in $[-1, 1]$ but the function $g$ given to  us is in $[0, 1]$. So we have to first convert it into another polynomial with range $[-1, 1]$.
 
