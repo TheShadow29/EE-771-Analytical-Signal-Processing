@@ -120,15 +120,27 @@ We are given that $g(x, y)$ is an infinite support 2d field. Also let $\tilde{g}
   \tilde{g}(\omega, \nu) \propto \frac{1}{\omega^3}exp(-|\nu|) \tag*{$|\omega| > 1, |\nu| > 1$}
 \end{align}
 
-We need to find the direction (along x-axis or along y-axis) in which we will find minimum aliasing. We first suppose that we will keep $x$ fixed and go along the y-axis. Let $h(y) = g(x_0, y)$
+We need to find the direction (along x-axis or along y-axis) in which we will find minimum aliasing. We note that when we sample, the frequency component inside the box $[-\pi, \pi] x [-\pi, \pi]$ corresponds to the actual signal (since $\Delta_x = \Delta_y =1$). Now when we sample along a particular direction (x or y axis), the function is repeated at the rate of sampling frequency along that axis. The contribution of the other copied frequency at intervals of $\pi$ inside the box represents the aliasing and we would want to minimize it.
 
-$$h(y) = g(x_0, y) = InvFourier(H(\nu)) = \int_{-\infty}^{\infty}H(\nu) exp(j2\pi \nu y) d\nu$$
-$$H(\nu) = \int_{-\infty}^{\infty}\tilde{g}(\omega, \nu) exp(j \omega x_0) d\omega$$
-$$h(y) = \int_{-\infty}^{-1}H(\nu) exp(j2\pi \nu y) d\nu + \int_{-1}^{1}H(\nu) exp(j2\pi \nu y) d\nu + \int_{1}^{\infty}H(\nu) exp(j2\pi \nu y) d\nu$$
-Let the three terms be $h_1(y), h_2(y), h_3(y)$ respectively. We note that the terms $h_1, h_3$ are the ones which control the aliasing (higher the magnitude of their sum, higher is the aliasing).
+We take two cases : along x-axis and the other along y-axis.
 
-First we consider $h_3(y)$
-$$h_3(y) = \int_{1}^{\infty} \int_{-1}^{1} \tilde{g}(\omega, \nu) exp(j\omega x_0 + j \nu y)d\omega d\nu + 2 \int_{1}^{\infty} \int_{1}^{\infty} \tilde{g}(\omega, \nu) exp(j \omega x_0 + j \nu y)d\omega d\nu$$
+Along x-axis: (y is fixed, sampled along x-axis). Denote aliasing in x-axis by $A_x$
+We assume that the \ref{eq:3} holds whenever $|\omega| > \pi$ or $|\nu| > \pi$
+$$A_x = \int_{-\pi}^{\pi} \int_{-\pi}^{\pi} \sum_{k \in \mathbb{Z}, k \ne 0} \tilde{g}(\omega - 2 \pi k, \nu) d\omega d\nu$$
+$$A_x = \int_{-\pi}^{\pi} \int_{-\pi}^{\pi} \sum_{k \in \mathbb{Z}, k \ne 0} \frac{\alpha}{|\hat{\omega}|^3}exp(-|\nu|) d\omega d\nu$$
+Here $\hat{\omega} = \omega - 2 \pi k$ and $|\hat{\omega}| > \pi$, hence we can replace $\tilde{g}$ with the approximation.
+
+$$A_x = 2(1 - exp(-\pi)) \int_{-\pi}^{\pi} \sum_{k \in \mathbb{Z}, k \ne 0} \frac{\alpha}{|\hat{\omega}|^3} d\omega$$.
+$$A_x = 2(1 - exp(-\pi)) \frac{2 \alpha}{2\pi^2} \sum_{k = 1}^{\infty} \frac{1}{|1-2k|^2} - \frac{1}{|1+2k|^2}$$
+The second term has a telescopic series summing up to 1
+$$A_x = (1 - exp(-\pi)) \frac{2\alpha}{\pi^2}$$
+
+Along y-axis: (x is fixed, sampled along y-axis).
+$$A_y = \int_{-\pi}^{\pi} \int_{-\pi}^{\pi} \sum_{k \in \mathbb{Z}, k \ne 0} \tilde{g}(\omega, \nu - 2\pi k) d\omega d\nu$$
+We would need the value of $\tilde{g}(\omega, \nu)$ when $|\omega| \le 1$ to compute this (as we can't directly use above formulation since the integral diverges for $\frac{1}{|\omega|^3}$).
+
+Therefore from the given information, it is best to sample along the x-axis as we have guaranteed finite aliasing in that direction.
+
 \section*{Q4}
 We are given a polynomial field $g(x) = a + bx + cx^2$ where $x \in [0, 1]$. Denote the legendre polynomial of degree k by $p_k(x)$. We know that the legendre polynomials are orthogonal in $[-1, 1]$ but the function $g$ given to  us is in $[0, 1]$. So we have to first convert it into another polynomial with range $[-1, 1]$.
 
