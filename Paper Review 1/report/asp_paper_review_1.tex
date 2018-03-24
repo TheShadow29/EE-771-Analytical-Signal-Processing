@@ -30,9 +30,9 @@ The paper has quite a few differences from the previous literature in the field.
 \item Earlier works use some or the other kind of fitness score and compare pairwise nodes and set a weight corresponding to the edge joining the two nodes. The fitness score in some sense evaluates the smoothness of the graph signal.
 \item The fitness score can either be from a regression model, or correlations between wavelet coefficients or PCA applied to matrices.
 \item The above class of algorithms only consider the local structure of the graph (pairwise correlation) and not the global structure. Also the paper uses factor analysis which can reveal a simple linear statistical model between the graph signal and the latent variables.
-\item Another class of algorithms tackle a similar problem of multiple kernel learning. But they use some priors to construct the initial graph and then use smoothness constraint to refine the graph. However, this paper makes no such assumptions and the graph is learnt only through the signal observations.
-\item The problem of learning graphical models from observed data and inferring graph structure for gaussian markov random fields are similar problems. However, it is known that there is a one-to-one correspondence between the algorithms for solving the above to partial correlations of random variables and hence it again collapses to the case of learning pairwise edge weights.
-\item Also, the learned graphical model (inverse correlation matrix) cannot be easily projected to get a laplacian which has reuqirements like having row sum as 0, non-positive diagonal entries. Therefore learning the inverse correlation matrix doesn't reveal the global structure of the graph.
+\item Another class of algorithms tackle a similar problem of multiple kernel learning. But they use some priors to construct the initial graph and then use smoothness constraint to refine the graph. However, this paper makes no such assumptions and the graph is learned only through the signal observations.
+\item The problem of learning graphical models from observed data and inferring graph structure for Gaussian Markov random fields are similar problems. However, it is known that there is a one-to-one correspondence between the algorithms for solving the above to partial correlations of random variables and hence it again collapses to the case of learning pairwise edge weights.
+\item Also, the learned graphical model (inverse correlation matrix) cannot be easily projected to get a laplacian which has requirements like having row sum as 0, non-positive diagonal entries. Therefore learning the inverse correlation matrix doesn't reveal the global structure of the graph.
 \item This paper, tries to jointly learn the link between the global smoothness and the graph topology using optimization techniques and this joint learning is what makes the work done novel.
 \end{itemize}
 
@@ -46,7 +46,7 @@ The smoothness of the graph signal is captured in equation (4) of the paper.
   $$h \sim \mathcal{N}(0, \Lambda^{\dagger})$$
 \item Here $\Lambda^{\dagger}$ is the moore-penrose inverse of the eigen-value matrix $\Lambda$.
 \item Clearly, $h$ will have a higher probability of taking a lower value. $x$ is proportional to $\chi h$. $\chi$ has the usual fourier transform interpretation. Hence smaller values of $h$ implies the graph signal $x$ has more lower frequency components. And thus the smoothness of the graph signal is captured. Also higher the eigen-value, smaller is the standard deviation corresponding to that component and therefore more condensed towards zero. In other words, the higher frequency components have very small contribution.
-\item We note that any distribution of $h$ which has condensed probability mass near zero is a suitable candidate and can be readily replaced with the gaussian distribution and still capture the smoothness.
+\item We note that any distribution of $h$ which has condensed probability mass near zero is a suitable candidate and can be readily replaced with the Gaussian distribution and still capture the smoothness.
 \end{itemize}
 
 \section*{Q3}
@@ -57,14 +57,14 @@ The smoothness of the graph signal is captured in equation (4) of the paper.
 \item $\epsilon \sim \mathcal{N}(0, \sigma_{\epsilon}^2I_{n})$ and $h \sim \mathcal{N}(0, \Lambda^{\dagger})$
 \item The authors claim that the input graph model is generalization of the classical factor analysis model. When representing the graph signal in terms of the eigen-vector matrix $\chi$ the model implicitly relates the topology of the graph to the properties of the graph signals. Also it can be interpreted as the fourier basis of the graph signal.
 \item The distribution of $h$ captures the smoothness of the signal (described in detail in q2).
-\item Also, in the noise free scenario, $x$ can be seen as a gaussian markov random field with respect to the graph G and the laplacian L being the precision matrix.
+\item Also, in the noise free scenario, $x$ can be seen as a Gaussian Markov random field with respect to the graph G and the laplacian L being the precision matrix.
 \item The model also generalizes well in the case of noise.
-\item In another work, it is shown that signal represneation with the classical factor analysis model provides a probabilistic interpretation of the representation learned by the PCA.
+\item In another work, it is shown that signal representation with the classical factor analysis model provides a probabilistic interpretation of the representation learned by the PCA.
 \item The distribution of $x|h$ and $x$ are as follows:
   $$x|h \sim \mathcal{N}(\chi h + u_x, \sigma_{\epsilon}^2 I_n)$$
   $$x \sim \mathcal{N}(u_x, L^{\dagger} + \sigma_{\epsilon}^2 I_n)$$
 \item When $h$ is given then since $\epsilon$ is gaussian distributed, $x|h$ simply becomes a shifted gaussian.
-\item When $h$ is not given then the $x$ becomes the sum of two gaussians and therefore its distribution is the convolution of the two gauassians and thus the variances add up.
+\item When $h$ is not given then the $x$ becomes the sum of two gaussians and therefore its distribution is the convolution of the two gaussians and thus the variances add up.
 \end{itemize}
 
 \section*{Q4}
@@ -99,7 +99,7 @@ The smoothness of the graph signal is captured in equation (4) of the paper.
 \end{itemize}
 
 \section*{Q5}
-The optimzation problem in \ref{eq:16} is not jointly convex in $L$ and $Y$. Therefore the authors adopt a scheme of alternating minimization where at each step one variable is fixed and the other variable is solved.
+The optimization problem in \ref{eq:16} is not jointly convex in $L$ and $Y$. Therefore the authors adopt a scheme of alternating minimization where at each step one variable is fixed and the other variable is solved.
 \begin{itemize}
 \item First they initialize $Y$ as the signal observation $X$. We note that from the factor analysis method $Y$ can be considered some form of average of the graph signals and therefore the initialization is justified.
 \item Thus at the first step the following optimization problem is solved for L:
@@ -126,5 +126,39 @@ The optimzation problem in \ref{eq:16} is not jointly convex in $L$ and $Y$. The
 \end{itemize}
 
 \section*{Q6}
+\begin{itemize}
+\item The authors compare their algorithm (GL-SigRep) with another algorithm with the same objective of finding laplacian which they call GL-LogDet, and also a sample correlation based graph.
+\item In their evaluation they show how they are able to outperform the other algorithm from both visual perspective and quantitative results.
+\item   The experiments are done on synthetic data (graphs that follow Erdos Renyi model, Barabasi Albert model) as well as on real world data like meteorological graph from temperature data, learning climate graph from evapotranspiration, learning political graph from voting data.
+\item In the real world cases, the authors try to come up with the most obvious ground truths like altitude for temperature, groundtruth clustering for climate graph. For the political data, since there is no obvious groundtruth data, they instead focus on validating their own graph (and donot compare with the other method).
+\item For quantitative results, the authors focus on F-measure, Precision, Recall, Normalized Mutual Information and provide this data wherever possible.
+\item \textbf{Synthetic Data}
+  \begin{itemize}
+  \item The Synthetic data comprises of Gaussian graph, ER graph, BA graph.
+  \item For visual evaluation, the authors point out sampled correlation based graphs have higher intensity values in the off-diagonal part which differs from their graph which have smaller off-diagonal values and they link it to the global smoothness property of their model. They also note that the graphs produced by their method (GL-SigRep) are visually more similar to the groundtruth than the graphs produced from GL-LogDet.
+  \item For quantitative evaluations, they notice higher F-measure for both Gaussian graphs, and BA graph which suggests the learned graph has topology very similar to the groundtruth ones and that the advantage of their model is less pronounced for the case of ER method whose edges are generated randomly.
+  \item Further, they get a mean squared error between the learned laplacians to get a sense how close the edge weights are to the true weights and even in this metric it outperforms the other two methods.
+  \item Also they observe that the regularization parameters $\alpha$, $\beta$ affect the F-measure, number of edges with a factor of $\frac{\beta}{\alpha}$ and this pattern is present across all the 3 models. This suggests that in practice, only the ratio $\frac{\beta}{\alpha}$ needs to be tuned.
+  \item The authors further deduce from the quantitative evaluations that their model GL-SigRep is able to learn very close to the groundtruth graph when number of edges matches the groundtruth graph.
+  \item It is also quantitatively shown that GL-SigRep remains stable until SNR becomes very low.
+  \end{itemize}
+\item \textbf{Learning Meteorological Graph from Temporal Data}
+  \begin{itemize}
+  \item While groundtruth is not readily available they use altitude as a more reliable source of information to determine temperature evolution and the groundtruth graph reflects the similarity between stations in terms of their altitudes. The authors further show that GL-SigRep outperforms GL-LogDet again in terms of both visual similarity and F-measure and other quantitative evaluations.
+  \item Next, they use spectral analysis to get disjoint clusters and show their algorithm works better than 2-cluster partition using k-means. They attribute this to the inability of k-means to capture global information and thus confirms the quality of the graph using GL-SigRep.
+  \end{itemize}
+\item \textbf{Learning Climate Graph Evapotranspiration Data}
+  \begin{itemize}
+  \item In this case, the groundtruth is not available directly, but there exists a reference map which does clustering of the stations. The authors use this clustering as groundtruth and compare it with spectral clustering as obtained by GL-SigRep and GL-LogDet and show that the former has a closer clustering representation to the groundtruth.
+  \end{itemize}
+
+\item \textbf{Learning Political Graph from Voting Data}
+  \begin{itemize}
+  \item In this case, there exists no obvious groundtruth representations. Hence the authors focus on interpreting the clusters obtained by partitioning the graph using GL-SigRep and show that the clustering is consistent with the general understanding of the voting behaviours in the national referendums.
+  \end{itemize}
+\end{itemize}
+
+
+
 
 \end{document}
