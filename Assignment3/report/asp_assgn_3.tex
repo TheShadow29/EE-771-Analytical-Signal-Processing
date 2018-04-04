@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage[a4paper, tmargin=1in, bmargin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[justification=centering]{caption}
+
+% \usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\sisetup{round-mode=places, round-precision=4}
+\usepackage{ bbold }
+
+\usepackage{pdflscape}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+\title{EE 771 : Recent Topics in Analytical Signal Processing Assignment 2}
+\author{Arka Sadhu - 140070011}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Q1}
+We are given a 1 dimensional periodic signal $x(t)$ with period $T=1$ as:
+$$x(t) = a_1 u(t - t_1) + a_2 u(t - t_2) - (a_1 + a_2) u(t - t_3)$$
+with $0 < t_1 < t_2 < t_3$
+\subsection*{1a}
+We want to find the number of samples of $x(t) * sinc(Bt)$ which are sufficient for the reconstrucion of $x(t)$ and a suitable value for $B$. We note that $x(t)$ is an example of a spline and therefore we can directly use Theorem 2 from the paper
+
+\subsection*{1b}
+We are now given a new 1d periodic signal $x_1(t)$ with the same period $T=1$ as:
+$$x_1(t) = x(t) + b_1 \delta (t - t_1) - b_2 (t - t_3)$$
+Clearly, this is an example of the stream of derivatives of dirac deltas and we can use Theorem 3 from the paper.
+
+\section*{Q2}
+We want to prove that the Yule Walker system in the algorithm mentioned in the paper is invertible.
+
+Denote the Yule Walker system matrix as $A$. To prove that $A$ is invertible it is sufficient to show that there exists no $x \ne 0$ such that $Ax = 0$.
+
+Suppose such an $x$ indeed exists. We then run into a contradiction and hence our claim that the matrix is invertible holds.
+
+\section*{Q3}
+We are given $u_1, u_2$ as the roots of unity. We want to construct the annhilation filter for the Fourier Series coefficients $$X[m] = \sum_{r=0}^3 c_r m^r u_1^m + \sum_{r=0}^1 d_r m^r u_2^m$$
+
+The annhilation filter $A(z)$ can be constructed in the following way (as noted in the paper).
+
+\section*{Q4}
+We are given
+$$x(t) = \sum_{k=1}^K b_k \delta (t - t_k)$$
+Here all $t_k$ are in $(0, 1)$. Two RC filters with values $(R_1,C_1)$ and $(R_2, C_2)$ are used in parallel to filter out $x(t)$. We are also given the impulse response of the RC filters as:
+$$h_i = exp(-R_i C_i) u(t)$$
+where $i = 1, 2$ and $u(t)$ is the unit time step signal. We need to find the conditions on sampling interval $T$ so that the sampled signal $x(t) * h_i(t)|_{t = nT}$ are sufficient to reconstruct the parameters of $x(t)$.
+
+
+\end{document}
