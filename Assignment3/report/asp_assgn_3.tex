@@ -25,6 +25,8 @@
 \maketitle
 
 \section*{Q1}
+Results are taken from the paper : M. Vetterli, P. Marziliano, and T. Blu, "Sampling Signals with Finite Rate of Innovation", IEEE Trans. on Signal Processing, Jun 2002.
+
 We are given a 1 dimensional periodic signal $x(t)$ with period $T=1$ as:
 $$x(t) = a_1 u(t - t_1) + a_2 u(t - t_2) - (a_1 + a_2) u(t - t_3)$$
 with $0 < t_1 < t_2 < t_3$
@@ -87,6 +89,7 @@ $$det(A) \ne 0$$
 Consequently, we have proved that $A$ is invertible.
 
 \section*{Q3}
+Paper followed : M. Vetterli, P. Marziliano, and T. Blu, "Sampling Signals with Finite Rate of Innovation", IEEE Trans. on Signal Processing, Jun 2002.
 We are given $u_1, u_2$ as the roots of unity. We want to construct the annihilation filter for the Fourier Series coefficients $$X[m] = \sum_{r=0}^3 c_r m^r u_1^m + \sum_{r=0}^1 d_r m^r u_2^m$$
 This can be re-written as:
 $$X[m] = u_1^m (c_0 + c_1 m + c_2 m^2 + c_3 m^3) + u_2^m (d_0 + d_1 m)$$
@@ -101,11 +104,35 @@ The annhilation filter $A(z)$ can be constructed in the following way (as noted 
 \end{itemize}
 
 \section*{Q4}
+Paper followed : A Generalized Sampling Method for Finite-Rate-of-Innovation-Signal Reconstruction by Chandra Sekhar Seelamantula, Member, IEEE, and Michael Unser, Fellow, IEEE.
+
 We are given
 $$x(t) = \sum_{k=1}^K b_k \delta (t - t_k)$$
 Here all $t_k$ are in $(0, 1)$. Two RC filters with values $(R_1,C_1)$ and $(R_2, C_2)$ are used in parallel to filter out $x(t)$. We are also given the impulse response of the RC filters as:
 $$h_i = exp(-R_i C_i) u(t)$$
 where $i = 1, 2$ and $u(t)$ is the unit time step signal. We need to find the conditions on sampling interval $T$ so that the sampled signal $x(t) * h_i(t)|_{t = nT}$ are sufficient to reconstruct the parameters of $x(t)$.
 
+Denote $\alpha_i=R_iC_i$ $$y_i(t) = x * h_i (t) = \sum_{k=1}^K b_k exp(-\alpha_i (t - t_k)) u(t - t_k)$$.
+
+Let the sampling period be $T$. Then we get:
+$$y_i (nT) = \sum_{k=1}^K b_k exp(-\alpha_i (nT - t_k)) u(nT - t_k), n \in \mathcal{Z}$$
+Now we consider a discrete time finite impulse response filter specified by the Z-Transform:
+$$G_i(z) = (1 - exp(-\alpha_i T)z^{-T})$$ It is noted that $G_i(z)$ is the convolutional inverse of the discrete time exponential $exp(-\alpha nT) u(nT)$.
+
+Therefore, when the sequence $y_i[n] = y_i(nT)$ is processed by $G_i(z)$ it gives rise to a stream of kronecker impulses.
+$$p_i(nT) = \sum_{k=1}^K b_k exp(-\alpha_i nT + \alpha_i t_k) (u(nT - t_k) - u((n-1)T -t_k))$$
+$$p_i(nT) = \sum_{k=1}^K b_k exp(-\alpha_i r(t_k) T + \alpha_i t_k) \delta[n-r(t_k)]$$
+
+Here $r(t_l) = \lceil t_k / T \rceil$ which indicates the ceiling operation.
+
+If we assume that there is at most one dirac impulse in a sampling interval then the amplitude of the kronecker delta signal carries information about the position as well as the amplitude of the corresponding dirac impulse in a separable fashion. The condition boils down to
+$$\min_{2 \le k \le K} \{t_k - t_{k-1}\} > T$$
+
+Now we note that the $k^{th}$ non zero value in $p_i(nT)$ (i =1, 2) occur at the time instant $r(t_k)T$ just after $k^{th}$ dirac impulse has excited the respective analog system. We compute for i=1,2:
+$$q_i[k] = p_i(r(t_k)T)exp(\alpha_i r(t_k) T) = b_k exp(\alpha_i t_k)$$
+
+We solve the above (two equations for i=1,2) and get:
+$$t_k = \frac{1}{\alpha_1 - \alpha_2} ln (\frac{q_1[k]}{q_2[k]}))$$
+$$a_k = exp(-\frac{\alpha_1}{\alpha_1 - \alpha_2} ln(\frac{q_1[k]}{q_2[k]}))$$
 
 \end{document}
