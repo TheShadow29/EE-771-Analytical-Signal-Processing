@@ -29,12 +29,14 @@ We are given a 1 dimensional periodic signal $x(t)$ with period $T=1$ as:
 $$x(t) = a_1 u(t - t_1) + a_2 u(t - t_2) - (a_1 + a_2) u(t - t_3)$$
 with $0 < t_1 < t_2 < t_3$
 \subsection*{1a}
-We want to find the number of samples of $x(t) * sinc(Bt)$ which are sufficient for the reconstrucion of $x(t)$ and a suitable value for $B$. We note that $x(t)$ is an example of a spline and therefore we can directly use Theorem 2 from the paper
+We want to find the number of samples of $x(t) * sinc(Bt)$ which are sufficient for the reconstrucion of $x(t)$ and a suitable value for $B$. We note that $x(t)$ is an example of a non-uniform spline and therefore we can directly use Theorem 2 from the paper.
+
+The minimum number of samples required are $N = 2M + 1$ where $M = \lfloor \frac{B \tau}{2} \rfloor$. We need $B \ge \rho$ where $\rho$ is the rate of innovation. In this case $\rho = \frac{2K}{\tau}$ and $K = 3$, $\tau = 1$. Therefore $\rho = 6$. But we note that $c_1 + c_2 + c_3 = 0$ which reduces one degree of freedom and hence $\tau = 5$. Thus, we need $B \ge 5Hz$. Choosing $B = 5Hz$ gives us $M = 2$ and $N = 5$, i.e. we can reconstruct the signal given 5 samples and choosing $B = 5Hz$.
 
 \subsection*{1b}
 We are now given a new 1d periodic signal $x_1(t)$ with the same period $T=1$ as:
-$$x_1(t) = x(t) + b_1 \delta (t - t_1) - b_2 (t - t_3)$$
-Clearly, this is an example of the stream of derivatives of dirac deltas and we can use Theorem 3 from the paper.
+$$x_1(t) = x(t) + b_1 \delta (t - t_1) - b_1 \delta (t - t_3)$$
+Clearly, this is an example of the stream of derivatives of dirac deltas and we can use Theorem 3 from the paper. First we find the rate of innovation. The degrees of freedom increases by only from the previous part. This gives us $\rho = \frac{6}{1} = 6Hz$. Choosing $B = 6Hz$ we get $M = 3$ and correspondingly $N=7$.
 
 \section*{Q2}
 We want to prove that the Yule Walker system in the algorithm mentioned in the paper is invertible.
@@ -83,10 +85,20 @@ u3^2 & u3 & 1
 Clearly B is also a vander monde matrix and therefore, $B$ is also non-singular. Also, $c_1, c_2, c_3$ are also non-zero (else there will be no diracs at those places and the dimension of the matrix will reduce). Therefore we have:
 $$det(A) \ne 0$$
 Consequently, we have proved that $A$ is invertible.
-\section*{Q3}
-We are given $u_1, u_2$ as the roots of unity. We want to construct the annhilation filter for the Fourier Series coefficients $$X[m] = \sum_{r=0}^3 c_r m^r u_1^m + \sum_{r=0}^1 d_r m^r u_2^m$$
 
-The annhilation filter $A(z)$ can be constructed in the following way (as noted in the paper).
+\section*{Q3}
+We are given $u_1, u_2$ as the roots of unity. We want to construct the annihilation filter for the Fourier Series coefficients $$X[m] = \sum_{r=0}^3 c_r m^r u_1^m + \sum_{r=0}^1 d_r m^r u_2^m$$
+This can be re-written as:
+$$X[m] = u_1^m (c_0 + c_1 m + c_2 m^2 + c_3 m^3) + u_2^m (d_0 + d_1 m)$$
+$$X[m] = u_1^m * poly(m, 3) + u_2^m * poly(m, 1)$$
+Here $poly(m, r)$ denotes a polynomial in $m$ of degree $r$.
+The annhilation filter $A(z)$ can be constructed in the following way (as noted in the paper):
+\begin{itemize}
+\item For $u_1^m poly(m, 3)$ we need the annihilation filter $A_1(z) = (1 - u_1z^{-4})$ (as stated in the paper). This is because, say $A_1(z) = \sum_{l=0}^4A_1[l]z^{-l}$, then $A_1^{(n)}(u_1) = 0 = \sum_{l=0}^4A_1[l] * l * (l-1) * .. * (l - n + 1) * z^{-l}$ and this would be true for all $n \le 3$. Thus $\sum_{l=0}^4A_1[l]P[l]u_1^{-l} = 0$. Here $P[l]$ is any polynomial of degree less than $3$. Moreover, this is smallest possible annihilation filter as we need to annihilate polynomials of degree 3.
+\item Similarly, to annihilate $u_2^m poly(m, 1)$ we require $A_2(z) = (1 - u_2z^{-1})^2$. This is the smallest filter to annihilate the components of $u_2$.
+\item To annihilate the sum we simply take the product of the two filters. $A(z) = A_1(z) A_2(z)$.
+  $$A(z) = (1 - u_1z^{-1})^4 (1 - u_2z^{-1})^2$$
+\end{itemize}
 
 \section*{Q4}
 We are given
