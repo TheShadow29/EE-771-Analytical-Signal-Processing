@@ -39,10 +39,50 @@ Clearly, this is an example of the stream of derivatives of dirac deltas and we 
 \section*{Q2}
 We want to prove that the Yule Walker system in the algorithm mentioned in the paper is invertible.
 
-Denote the Yule Walker system matrix as $A$. To prove that $A$ is invertible it is sufficient to show that there exists no $x \ne 0$ such that $Ax = 0$.
+Denote the Yule Walker system matrix as $A$. We consider a $3x3$ matrix and note that the proof can be easily extended to any other $nxn$ matrix.
 
-Suppose such an $x$ indeed exists. We then run into a contradiction and hence our claim that the matrix is invertible holds.
+$A = \begin{bmatrix}
+X[0] & X[-1] & X[-2]\\
+X[1] & X[0] & X[-1]\\
+X[2] & X[1] & X[0]
+\end{bmatrix}$
 
+Here $X[m] = \frac{1}{\tau} \sum_{k=0}^{K-1} c_k exp(-i 2 \pi m t_k / \tau)$. Denote $u_k = exp(-i 2\pi t_k / \tau)$. We can re-write $X[m] = \frac{1}{\tau} \sum_{k=0}^{K-1}c_k u_k^m$. In this case $K=3$. Also it is clear that the value of $\tau$ wouldn't make a difference in the invertibility of the matrix $A$. Thus we can write the following:
+$$X[0] = c_1 + c_2 + c_3$$
+$$X[1] = c_1u_1 + c_2 u_2 + c_3 u_3$$
+$$X[2] = c_1 u_1^2 + c_2 u_2^2 + c_3u_3^2$$
+$$X[-1] = c_1 u_1^{-1} + c_2 u_2^{-1} + c_3 u_3^{-1}$$
+$$X[-2] = c_1 u_1^{-2} + c_2 u_2^{-2} + c_3 u_3^{-2}$$
+
+We further note that we can write $A$ as $A = [A_1c | A_2c | A_3c]$. Here:
+$$A_3 = \begin{bmatrix}
+u_1^{-2} & u_2^{-2} & u_3^{-2}\\
+u_1^{-1} & u_1^{-1} & u_3^{-1}\\
+ 1 &  1 & 1
+\end{bmatrix}$$
+
+$$A_2 = UA_3$$
+$$A_1 = U^2 A_3$$
+
+$$U = \begin{bmatrix}
+u1 & 0 & 0\\
+0 & u_2 & 0\\
+0 & 0 & u_3
+\end{bmatrix}$$
+
+Moreover, $A_3$ is a permutation of a vander monde matrix. Therefore $A_3$ is invertible and therefore is non-singular. Now denote the determinant of $A$ by $det(A)$. We have
+$$det(A) = det(A_3 [U^2c | Uc | c]) = det(A_3) det([U^2c | Uc | c])$$
+The first term on the rhs is non-zero since $A_3$ is non-singular. The second term on the rhs is
+$$det([U^2c | Uc | c]) = c_1 c_2 c_3 det(B)$$
+$$B = \begin{bmatrix}
+u1^2 & u1 & 1\\
+u2^2 & u2 & 1\\
+u3^2 & u3 & 1
+\end{bmatrix}$$
+
+Clearly B is also a vander monde matrix and therefore, $B$ is also non-singular. Also, $c_1, c_2, c_3$ are also non-zero (else there will be no diracs at those places and the dimension of the matrix will reduce). Therefore we have:
+$$det(A) \ne 0$$
+Consequently, we have proved that $A$ is invertible.
 \section*{Q3}
 We are given $u_1, u_2$ as the roots of unity. We want to construct the annhilation filter for the Fourier Series coefficients $$X[m] = \sum_{r=0}^3 c_r m^r u_1^m + \sum_{r=0}^1 d_r m^r u_2^m$$
 
