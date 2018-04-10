@@ -34,4 +34,5 @@ if __name__ == "__main__":
         stab_const_tmp = get_stability_const(k)
         stab_const_list.append(stab_const_tmp)
     plt.plot(np.arange(1, 6), stab_const_list)
-    plt.show()
+    # plt.show()
+    plt.savefig('plotek.png')

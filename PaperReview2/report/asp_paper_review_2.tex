@@ -31,4 +31,35 @@ The paper is different from the previous works in the following ways:
 \item This work analyzes maximum possible reconstruction error due to quantization.
 \end{itemize}
 
+\section*{Q2}
+In general it is not possible $\max_k |t_k - \hat{t_k}|$ to decrease faster than $O(2^{-L})$. From eq(44) we have a lower bound proportional to $||\hat{V} - V||$. Since $\infty$ norm is less than $2$-norm. The lower bound in proportional to $||\hat{V} - V||_{\infty}$.
+
+We further note:
+$$||\hat{V} - V||_{\infty} = \sum_{k=1}^K|sin(l \pi (t_k - \hat{t_k})|$$
+We know $sin(2x) \ge x$ when $x \in [0, \pi / 4]$. Clearly if $l \ge 2$ then the inequality is always followed.
+$$||\hat{V} - V||_{\infty} \ge \frac{1}{2}\sum_{k=1}^K|(l \pi (t_k - \hat{t_k})| \ge \frac{1}{2} \max_k l \pi |t_k - \hat{t_k}|$$
+
+Therefore the lower bound is also of the order $O(2^{-L})$. Hence $\max_k |t_k - \hat{t_k}|$ cannot decrease faster than $O(2^{-L})$ unless $\hat{V}$ and $V$ are extremely close to each other which occurs when the approximations $t_k$ and $\hat{t_k}$ are very close. So in general cases, the lower bound is also of the order $O(2^{-L})$.
+
+\section*{Q3}
+Part C is the most difficult to analyze because we are trying to give bounds on the inverse of $\hat{\chi}$.
+
+To solve this, the authors do the following:
+\begin{itemize}
+\item First get the singular value decomposition of $\chi = VDV^T$. Here $V$ is a vandermonde system with $V_{ij} = exp(-j2 \pi (i-1) t_j)$. And $D = diag(c_1, c_2, \ldots, c_K)$.
+\item Then they use the fact $\sigma_K(\chi) \ge [\sigma_K(V)]^2 \min_k |c_k|$.
+\item Next, they find the $\infty$ norm of $V^{-1}$ and use $||V^{-1}|| = [\sigma_K(V)]^{-1} \le \sqrt{K} ||V^{-1}||_{\infty}$. Combining this with the previous step gives them a bound on $\sigma_K(\chi)$ as
+  $$\sigma_K(\chi) \ge [(\prod_{v=1}^{\lfloor \frac{K}{2} \rfloor} 4 sin^2(\pi v \delta_1)) \frac{1}{2^{K-1} \sqrt{K}}]^2 c_{min}$$
+\item The authors further use the theorem that if A, B are two nxn invertible matrices with $\sigma_1(B) < \sigma_n(A)$ then $A + B$ is always invertible. The authors had previously assumed $||\hat{\chi} - \chi|| \le \sigma_K(\chi) / 2$ and therefore this confirms the invertibility of $\hat{\chi}$.
+\end{itemize}
+
+\section*{Q4}
+Code is attached in the zip file. A plot of stability constant $\epsilon$ vs $K$ is shown here.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.75]{images/plotek}
+  \caption{Plot of $\epsilon$ vs $K$}
+  \label{fig:1}
+\end{figure}
+
 \end{document}
