@@ -1,0 +1,107 @@
+\documentclass{article}
+\usepackage[a4paper, tmargin=1in, bmargin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[justification=centering]{caption}
+
+% \usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\sisetup{round-mode=places, round-precision=4}
+\usepackage{ bbold }
+
+\usepackage{pdflscape}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+\title{EE 771 : Recent Topics in Analytical Signal Processing Assignment 4}
+\author{Arka Sadhu - 140070011}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Q1}
+Given $$g(x) = \sum_{k=-M}^{k=M} a[k]exp(j2\pi k x)$$
+We can write $y = [g(t_1), g(t_2) \ldots g(t_n)]^T$ as $y = Ax$ where $x = [a[-M], \ldots ,a[M]]^T$
+Here matrix $A$ is a $n$ x $2M + 1$ matrix and its $i^{th}$ row and $j^{th}$ column is given by $A_{i, j} = exp(j 2\pi (-M + j - 1) t_i)$
+
+It is visible that $A$ is full rank matrix for any $n \le 2M + 1$ since the matrix $A$ can be shown to be equivalent to a vandermonde matrix with some minor manipulations. Suppose that $x$ is s-sparse vector, and we take 2s measurements, this gives us $A$ of dimensions $2s x 2M + 1$. If we assume that $2s \le 2M + 1$ then we have $A$ to be full rank with rank $2s$.
+
+Assume that we have two different solutions: $x_1$ and $x_2$ both of which are s-sparse. This gives us $y = Ax_1$ and $y = Ax_2$ and therefore $A(x_1 - x_2) = 0$. Clearly, $x_1 - x_2$ can be atmost 2s sparse vector. But rank of $A$ is more than 2s, and therefore we must have $x_1 - x_2 = 0$ as the only solution. That is $x_1 = x_2$ which implies $A$ results in unique $x$ if 2s measurements are done.
+
+\section{Q2}
+Given $$g(x) = \sum_{k = 0}^M a_k x^k$$ and $x \in [0, 1]$
+
+In this case again we will have $y = Ax$ where $x = [a[0] \ldots a[M]]^T$ and $A$ will be of dimensions $n x M+1$. Its $i^{th}$ row and $j^{th}$ columns are given as: $A_{i, j} = t_i^{j - 1}$.
+
+\section{Q3}
+The main difference between L1-minimization and OMP is that the former is independent of the sparsity. This is evident from the equation as well where the only constraint is because of the regularization which again is not a hard constraint.
+
+In practice what is found is (reference: Simon Book Pg 73), OMP is much faster for small values of s. In such cases the L1-minimization may take more time as it is not able to utilize the hard constraints on the sparsity. On the other hand, if the sparsity is mildly larger, L1-minimization may beat the OMP algorithm in terms of computation time.
+
+\section{Q4}
+We are given the definition of coherence as:
+$$\mu_1(s)  = \max_{i \in [N]} \max \{\sum_{k \in S} |\langle a_i, a_k \rangle|, S \subset [N], card(S) = s, i \notin S \}$$
+
+Need to show that for any s-sparse vector $x$:
+$$(1 - \mu_1(s - 1)) ||x||_2^2 \le ||Ax||_2^2 \le (1 + \mu_1(s-1)) ||x||_2^2$$
+This is equivalent to showing for $||x||_2^2 = 1$:
+$$(1 - \mu_1(s - 1)) \le ||Ax||_2^2 \le (1 + \mu_1(s-1))$$
+So for the remainder of the proof assume $||x||_2^2 = 1$.
+
+We define
+$$\mu_{1,i} = \max \{\sum_{k \in S} |\langle a_i, a_k \rangle|, S \subset [N], card(S) = s, i \notin S \}$$
+Thus
+$$\mu_1 = \max_{i \in [N]} \mu_{1,i}$$
+
+We first note:
+$$||Ax||_2^2 = \langle A_sx_s, A_sx_s \rangle = x_s^T A_s^TA_s x_s = x_s^T \hat{A_s} x_s $$
+Here $\hat{A_s} = A_s^T A_s$. Also if $A_s$ and $x_s$ are not real, then transpose is replaced by conjugate transpose everywhere. Denote the result by $F$. We get:
+
+$$F = x_s^T \hat{A_s} x_s = \sum_{i \in S} \sum_{j \in S} x_i \hat{A}_{i, j} x_j$$
+We further note that $\hat{A}_{i, j} = |\langle a_i, a_j \rangle|$ which implies $\hat{A}_{i, i} = 1$. This allows us to rewrite $F$ as:
+$$F = \sum_{i \in S}x_i^2 + \sum_{i \in S} \sum_{j \in S - i} x_i |\langle a_i, a_j \rangle| x_j$$
+$$F = 1 + \sum_{i \in S} \sum_{j \in S - i} x_i |\langle a_i, a_j \rangle| x_j$$
+We observe that $$\sum_{j \in S - i}|\langle a_i, a_j \rangle| x_j \le \mu_{1,i}(s - 1)$$ as the equality is obtained only if we have the $x_j$ corresponding to the maximum value of $|\langle a_i, a_j \rangle|$ as $1$, else LHS is always less than RHS. This gives us:
+$$F \le 1 + \sum_{i \in S} \mu_{i, 1}(s - 1) x_i$$
+Again, by similar observation as before we get:
+$$\sum_{i \in S} \mu_{i, 1}(s - 1) x_i \le  \mu_1(s-1)$$
+Thus we get
+$$F \le 1 + \mu_1(s -1)$$
+
+For lower bound instead of having the corresponding coefficient $x_j$ and $x_i$ as 1 we have them set to -1. This results instead
+$$F \ge 1 - \mu_1(s-1)$$
+
+Hence we have proved:
+$$1 - \mu_1(s-1) \le ||Ax||_2^2 \le 1 + \mu_1(s-1)$$
+
+\section{Q5}
+Coherence of matrix A is defined as:
+$$\mu(A) = \max_{1 \le i \ne j \le N} |\langle a_i, a_j \rangle|$$
+We know that a DFT matrix is orthogonal  matrix. Therefore for any $i \ne j$ we have $|\langle a_i, a_j \rangle| = 0$. Therefore the coherence is also 0.
+
+\section{Q6}
+We have $(t_k, y_k)$ measurements for $k = 1, 2, \ldots m$. Also it is known that the function $f(t)$ is sparse in the dictionary $\phi_1(t), \ldots \phi_N(t)$. Thus it is prudent to consider:
+$$f(t) = \sum_{k=1}^N a_k \phi_k(t)$$
+We also have $y = f(t)$. Combining the two we get:
+$$ y = \Phi x$$
+$$ y =
+\begin{bmatrix}
+y_1\\
+\vdots\\
+y_m
+\end{bmatrix}$$
+
+$$ x =
+\begin{bmatrix}
+a_1\\
+\vdots\\
+a_N
+\end{bmatrix}$$
+
+$\Phi$ is of dimensions $m$ x $N$. $\Phi_{i, j} = \phi_j(t_i)$
+\end{document}
